@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="cyan">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#04060a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<title>J.A.R.V.I.S</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="boot"><pre id="bootTxt"></pre></div>
+<canvas id="bg"></canvas>
+
+<header>
+  <button id="menuBtn" class="ib" type="button" title="menu" aria-label="menu">☰</button>
+  <svg id="orb" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="var(--line)" stroke-width="2"/>
+    <circle id="orbRing" cx="50" cy="50" r="36" fill="none" stroke="var(--ac)" stroke-width="3" stroke-dasharray="40 20" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="6" fill="var(--ac)"/>
+  </svg>
+  <div class="ti"><h1>J.A.R.V.I.S</h1><span id="st">ONLINE</span></div>
+  <div class="sp"></div>
+  <button id="searchBtn" class="ib" type="button" title="web search">SEARCH</button>
+  <button id="liveBtn" class="ib" type="button">LIVE</button>
+  <button id="setBtn" class="ib" type="button">⚙</button>
+</header>
+
+<div id="chat"></div>
+<div id="toasts"></div>
+
+<div id="attach">
+  <img id="attachImg" alt=""><span id="attachName" style="font-size:.85em;color:var(--dim)"></span>
+  <button class="ib" id="attachX" type="button">✕</button>
+</div>
+
+<form id="f">
+  <button class="ib" id="imgBtn" type="button" title="image">📷</button>
+  <textarea id="in" dir="auto" rows="1" placeholder="دستور یا سؤال..." enterkeyhint="send"></textarea>
+  <button class="ib" id="mic" type="button">MIC</button>
+  <button class="ib" id="send" type="submit">SEND</button>
+</form>
+<input type="file" id="fileIn" accept="image/*" hidden>
+
+<!-- drawer: chats -->
+<div id="scrim"></div>
+<aside id="drawer">
+  <h3>گفتگوها</h3>
+  <div id="dbtn">
+    <button class="ib" id="newChat" type="button">+ گفتگوی جدید</button><button class="ib" id="closeDrawer" type="button">بستن</button>
+    <button class="ib" id="notesBtn" type="button">📝 یادداشت‌ها</button><button class="ib" id="timersBtn" type="button">⏱ تایمرها</button>
+  </div>
+  <div id="chats"></div>
+</aside>
+
+<!-- settings dialog -->
+<dialog id="dlg">
+  <div class="dh"><h3>تنظیمات</h3><button class="ib" id="dlgClose" type="button">✕</button></div>
+  <div class="db">
+    <details open><summary>API</summary>
+      <div class="fld"><label>API key</label><input id="k" class="ltr" type="password" autocomplete="off"></div>
+      <div class="fld"><label>Provider</label><select id="p"><option value="gemini">Google Gemini</option><option value="anthropic">Anthropic Claude</option></select></div>
+      <div class="fld"><label>Model</label><input id="m" class="ltr"></div>
+      <div class="fld ck"><label for="sg">Google Search grounding (فقط Gemini)</label><input id="sg" type="checkbox"></div>
+    </details>
+    <details><summary>شخصیت و رفتار</summary>
+      <div class="fld"><label>دستور شخصی‌سازی (اختیاری)</label><textarea id="persona" rows="3" placeholder="مثلاً: رسمی صحبت کن / فقط فارسی جواب بده"></textarea></div>
+      <div class="fld"><label>زبان گفتار میکروفون</label><select id="l"><option value="fa-IR">فارسی</option><option value="en-US">English</option></select></div>
+      <div class="fld ck"><label for="v">خروجی صوتی</label><input id="v" type="checkbox"></div>
+      <div class="fld"><label>سرعت صدا (<span id="rateV"></span>×)</label><input id="rate" type="range" min="0.6" max="1.6" step="0.1"></div>
+    </details>
+    <details><summary>ظاهر</summary>
+      <div class="fld"><label>تم رنگی</label><div class="th-chips" id="themeChips"></div></div>
+      <div class="fld"><label>اندازه‌ی قلم (<span id="fsV"></span>px)</label><input id="fs" type="range" min="13" max="20" step="1"></div>
+    </details>
+    <details><summary>حافظه و یادداشت‌ها</summary>
+      <div id="memList"></div>
+      <div class="row"><button class="ib" id="memClear" type="button">پاک کردن کل حافظه</button></div>
+    </details>
+    <details><summary>داده‌ها</summary>
+      <div class="row">
+        <button class="ib" id="expData" type="button">خروجی گرفتن از همه‌چیز</button>
+        <button class="ib" id="impData" type="button">وارد کردن</button>
+      </div>
+      <div class="row"><button class="ib warn" id="wipeAll" type="button">پاک کردن کامل (گفتگوها، حافظه، تنظیمات)</button></div>
+      <input type="file" id="impFile" accept="application/json" hidden>
+    </details>
+    <div class="row"><button class="ib" id="save" type="button" style="flex:2">ذخیره</button></div>
+  </div>
+</dialog>
+
+<!-- notes dialog -->
+<dialog id="notesDlg">
+  <div class="dh"><h3>یادداشت‌ها</h3><button class="ib" id="notesClose" type="button">✕</button></div>
+  <div class="db" id="notesBody"></div>
+</dialog>
+
+<!-- timers dialog -->
+<dialog id="timersDlg">
+  <div class="dh"><h3>تایمرها</h3><button class="ib" id="timersClose" type="button">✕</button></div>
+  <div class="db" id="timersBody"></div>
+</dialog>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
